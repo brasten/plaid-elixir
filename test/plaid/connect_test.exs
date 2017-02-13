@@ -61,8 +61,10 @@ defmodule Plaid.ConnectTest do
   end
 
   @tag add: true
-  test "Add user with Error response, no credentials", %{add_bad_params: params} do
+  test "Add user with Error response, no credentials", %{bad_params: params} do
+
     use_cassette "connect_test/add_error_resp_no_cred" do
+
       {:error, resp} = Plaid.Connect.add(params)
       assert Plaid.Error == Map.get(resp, :__struct__)
     end
