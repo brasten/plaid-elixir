@@ -108,6 +108,15 @@ defmodule Plaid.Utilities do
           _ ->
             map_institution(body)
         end
+      :paginated_institutions ->
+        case Poison.decode!(body) do
+          %{"results" => results} when is_list(results) ->
+            map_institutions(Poison.encode!(results))
+          [_|_] ->
+            map_institutions(body)
+          _ ->
+            map_institution(body)
+        end
       :long_tail ->
         case Poison.decode!(body) do
           [] ->
@@ -179,6 +188,14 @@ defmodule Plaid.Utilities do
   end
 
   defp map_institution(body) do
+    Poison.decode!(body, as: %Institutions{credentials: %InstitutionsCredentials{}})
+  end
+
+  defp map_paginated_institutions(body) do
+    Poison.decode!(body, as: [%Institutions{credentials: %InstitutionsCredentials{}}])
+  end
+
+  defp map_paginated_institution(body) do
     Poison.decode!(body, as: %Institutions{credentials: %InstitutionsCredentials{}})
   end
 

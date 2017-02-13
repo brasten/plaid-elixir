@@ -37,6 +37,14 @@ defmodule Plaid.Institutions do
     |> Utilities.handle_plaid_response(:institutions)
   end
 
+  @spec all(integer, integer, map) :: {atom, list | map}
+  def all(count, offset, cred \\ nil) do
+    endpoint = @endpoint <> "/all"
+    params = %{count: count, offset: offset}
+    Plaid.make_request_with_cred(:post, endpoint, cred || Plaid.config_or_env_cred(), params)
+    |> Utilities.handle_plaid_response(:paginated_institutions)
+  end
+
   @doc """
   Fetchs an institution based on the id.
 
